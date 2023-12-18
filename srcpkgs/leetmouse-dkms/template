@@ -1,0 +1,30 @@
+# Template file for 'leetmouse-dkms'
+pkgname=leetmouse-dkms
+version=0.10.0
+revision=1
+conf_files="/usr/lib/udev/rules.d/99-leetmouse.rules"
+short_desc="Mouse acceleration module"
+maintainer="Eugene Gladkov <korsilyn@pm.me>"
+license="GPL-2.0-or-later"
+homepage="https://github.com/korsilyn/leetmouse"
+distfiles="https://github.com/korsilyn/leetmouse/archive/refs/tags/0.10.0.tar.gz"
+checksum=0fad6ddb2a7f0dd6e9776283a682a9c1a5bc1088ec13a025fd5fa440ba519fb0
+
+dkms_modules="leetmouse ${version}"
+depends="dkms"
+
+do_install() {
+	vmkdir usr/src/leetmouse-${version}
+	vcopy Makefile usr/src/leetmouse-${version}
+	vmkdir usr/src/leetmouse-${version}/driver
+	vcopy driver/* usr/src/leetmouse-${version}/driver
+	vmkdir usr/lib/udev/rules.d
+	vinstall install_files/udev/99-leetmouse.rules 644 /usr/lib/udev/rules.d
+	vinstall install_files/udev/leetmouse_bind 755 /usr/lib/udev
+	vinstall install_files/udev/leetmouse_manage 755 /usr/lib/udev
+	vinstall install_files/dkms/dkms.conf 644 usr/src/leetmouse-${version}
+
+	#vmkdir usr/lib/modules-load.d
+	#echo "leetmouse" > usr/lib/modules-load.d/leetmouse.conf
+	#chmod 644 usr/lib/modules-load.d/leetmouse.conf
+}
